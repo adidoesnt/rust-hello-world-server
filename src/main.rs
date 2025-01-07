@@ -1,13 +1,18 @@
-mod env_vars;
+mod components;
 mod handlers;
 
 use axum::{routing::get, Router};
 use handlers::hello_world;
-use std::net::SocketAddr;
+use std::{net::SocketAddr, sync::Arc};
 use tokio::net::TcpListener;
+use components::{database::{connect_to_db, check_db_connection}, env_vars};
+use sea_orm::DatabaseConnection;
 
-#[tokio::main(flavor = "current_thread")]
+#[tokio::main]
 async fn main() {
+    let db_ref: Arc<DatabaseConnection> = connect_to_db().await;
+    check_db_connection(db_ref).await;
+
     let port: String = env_vars::get_env_var("PORT");
     let parsed_port: u16 = port.parse::<u16>().unwrap();
 
