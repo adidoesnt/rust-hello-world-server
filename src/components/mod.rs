@@ -3,4 +3,5 @@ pub mod database;
 pub mod handlers;
 pub mod router;
 pub mod server;
+pub mod services;
 pub mod repositories;
