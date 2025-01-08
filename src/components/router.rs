@@ -1,20 +1,27 @@
-use super::database::connect_to_db;
-use crate::components::handlers::health_check;
+use crate::components::{database, handlers::{health_check, user_router}};
 use axum::{routing::get, Router};
 use sea_orm::DatabaseConnection;
-use std::sync::Arc;
 
-pub async fn get_db_ref() -> Arc<DatabaseConnection> {
-    let db_ref: Arc<DatabaseConnection> = connect_to_db().await;
+#[derive(Clone)]
+pub struct AppState {
+    pub db: DatabaseConnection,
+}
 
-    db_ref.clone()
+pub async fn get_db() -> DatabaseConnection {
+    let db: DatabaseConnection = database::connect_to_db().await;
+
+    db
 }
 
 pub async fn get_router() -> Router {
     let health_check_handler = get(health_check::handler);
-    let db_ref: Arc<DatabaseConnection> = get_db_ref().await;
+    let user_router = user_router::get_user_router();
+    
+    let db: DatabaseConnection = get_db().await;
+    let app_state = AppState { db };
 
     Router::new()
         .route("/", health_check_handler)
-        .with_state(db_ref)
+        .nest("/users", user_router)
+        .with_state(app_state)
 }

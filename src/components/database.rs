@@ -1,10 +1,9 @@
 extern crate sea_orm;
 
-use std::sync::Arc;
 use sea_orm::{Database, DatabaseConnection, DbErr};
 use crate::components::env_vars;
 
-pub async fn connect_to_db() -> Arc<DatabaseConnection> {
+pub async fn connect_to_db() -> DatabaseConnection {
     let database_url: String = env_vars::get_env_var("DATABASE_URL");
     let database: DatabaseConnection = Database::connect(database_url).await.unwrap();
 
@@ -15,5 +14,5 @@ pub async fn connect_to_db() -> Arc<DatabaseConnection> {
         Err(e) => println!("💀 Error connecting to database: {}", e),
     }
 
-    Arc::new(database)
+    database
 }
