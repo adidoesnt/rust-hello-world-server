@@ -1,7 +1,7 @@
-use std::net::SocketAddr;
-use axum::Router;
-use tokio::net::TcpListener;
 use super::{env_vars, router};
+use axum::Router;
+use std::net::SocketAddr;
+use tokio::net::TcpListener;
 
 pub async fn get_tcp_listener() -> TcpListener {
     let port: String = env_vars::get_env_var("PORT");
