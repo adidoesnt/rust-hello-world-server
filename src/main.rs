@@ -1,8 +1,7 @@
 mod components;
-mod handlers;
 
 use axum::{routing::get, Router};
-use handlers::hello_world;
+use components::handlers::hello_world;
 use std::{net::SocketAddr, sync::Arc};
 use tokio::net::TcpListener;
 use components::{database::{connect_to_db, check_db_connection}, env_vars};
