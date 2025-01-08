@@ -1,1 +1,1 @@
-pub mod hello_world;
+pub mod health_check;
